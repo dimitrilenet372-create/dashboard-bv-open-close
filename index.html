@@ -71,7 +71,6 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp }          from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -177,11 +176,70 @@ let _chosen   = null;
 function pad(n) { return String(n).padStart(2, '0'); }
 function nowStr() { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
 
+/* ── Feux d'artifice ── */
+let _fireworksActive = false;
+let _fireworksFrame  = null;
+const PARTICLES = [];
+
+function lancerFeuArtifice(canvas) {
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height * 0.6;
+  const hue = Math.random() * 360;
+  const count = 80 + Math.floor(Math.random() * 40);
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 / count) * i;
+    const speed = 2 + Math.random() * 4;
+    PARTICLES.push({ x, y,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+      alpha: 1, hue: hue + Math.random() * 40 - 20,
+      size: 2 + Math.random() * 2, decay: 0.012 + Math.random() * 0.008 });
+  }
+}
+
+function animerFeux() {
+  const canvas = document.getElementById('fw');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (Math.random() < 0.05) lancerFeuArtifice(canvas);
+  for (let i = PARTICLES.length - 1; i >= 0; i--) {
+    const p = PARTICLES[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.alpha -= p.decay;
+    if (p.alpha <= 0) { PARTICLES.splice(i, 1); continue; }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${p.hue},100%,65%,${p.alpha})`;
+    ctx.fill();
+  }
+  _fireworksFrame = requestAnimationFrame(animerFeux);
+}
+
+function startFireworks() {
+  if (_fireworksActive) return;
+  _fireworksActive = true;
+  const c = document.getElementById('fw');
+  if (c) c.style.display = 'block';
+  animerFeux();
+}
+
+function stopFireworks() {
+  if (!_fireworksActive) return;
+  _fireworksActive = false;
+  if (_fireworksFrame) cancelAnimationFrame(_fireworksFrame);
+  const c = document.getElementById('fw');
+  if (c) { c.style.display = 'none'; c.getContext('2d').clearRect(0,0,c.width,c.height); }
+  PARTICLES.length = 0;
+}
+
 /* ── Rendu ── */
 function renderStats() {
   const open = bureaux.filter(b => b.statut === 'open').length;
   document.getElementById('s-open').textContent   = open + ' ouverts';
   document.getElementById('s-closed').textContent = (72 - open) + ' fermés';
+  if (open === 72) startFireworks();
+  else             stopFireworks();
 }
 
 function render() {
@@ -257,7 +315,6 @@ window.confirmStatus = function() {
   const t   = nowStr();
   update(ref(db, 'bureaux'), { [key]: { statut: _chosen, heure: t } });
   closeModal();
-  showToast('Bureau ' + pad(b.id) + ' — ' + (_chosen === 'open' ? 'Ouvert' : 'Fermé'));
 };
 
 window.setF = function(f) {
@@ -268,11 +325,6 @@ window.setF = function(f) {
   render();
 };
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
 
 document.getElementById('search').addEventListener('input', render);
 document.getElementById('overlay').addEventListener('click', e => {
@@ -281,5 +333,6 @@ document.getElementById('overlay').addEventListener('click', e => {
 document.getElementById('date-label').textContent =
   new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
 </script>
+<canvas id="fw" style="display:none;position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
 </body>
 </html>
