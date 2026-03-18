@@ -1,71 +1,104 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bureau 06 — École P. Curie</title>
-  <link rel="stylesheet" href="../bureau.css" />
-</head>
-<body>
-<div class="page">
+/* ============================================================
+   BUREAU INDIVIDUEL — JavaScript avec Firebase
+   Synchronisation temps réel entre tous les appareils
+   ============================================================ */
 
-  <div id="main">
-    <div class="bureau-info">
-      <!-- Numéro du bureau — ne pas modifier -->
-      <span class="bureau-num">Bureau 06</span>
-      <!-- Lieu / nom du bureau — modifier ici -->
-      <span class="bureau-name">École P. Curie</span>
-      <!-- Adresse postale — modifier ici -->
-      <span class="bureau-adresse">6 Rue Pierre et Marie Curie</span>
-    </div>
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getDatabase, ref, onValue, update }
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
-    <div class="status-block">
-      <span class="status-label">État actuel</span>
-      <div id="current-badge" class="closed">
-        <span id="current-dot" class="closed"></span>
-        <span id="current-label">Fermé</span>
-      </div>
-      <span id="current-time"></span>
-    </div>
+/* ── Config Firebase ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyDa8YO-DiY0eH7IQanoYi0Vd62t5DE3Kgo",
+  authDomain:        "mairie-13-bv.firebaseapp.com",
+  databaseURL:       "https://mairie-13-bv-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "mairie-13-bv",
+  storageBucket:     "mairie-13-bv.firebasestorage.app",
+  messagingSenderId: "868318584382",
+  appId:             "1:868318584382:web:69b37e44e5d249b34efb6f",
+  measurementId:     "G-FDFKZMFMJS"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
 
-    <div class="sep">modifier</div>
+/* ── Numéro du bureau lu depuis le DOM ── */
+const bureauNumEl  = document.querySelector('.bureau-num');
+const bureauNumTxt = bureauNumEl ? bureauNumEl.textContent.trim() : 'Bureau 01';
+const bureauId     = bureauNumTxt.replace('Bureau ', '').trim(); // ex: "07"
+const DB_KEY       = 'bureaux/bureau_' + bureauId;
 
-    <div class="btn-group">
-      <button class="btn-status sel-closed" id="btn-closed" onclick="pick('closed')">
-        <div class="btn-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="8" stroke="#E24B4A" stroke-width="1.5"/>
-            <path d="M7 7l6 6M13 7l-6 6" stroke="#E24B4A" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        Fermé
-      </button>
-      <button class="btn-status" id="btn-open" onclick="pick('open')">
-        <div class="btn-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="8" stroke="#1D9E75" stroke-width="1.5"/>
-            <path d="M6.5 10l2.5 2.5 5-5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        Ouvert
-      </button>
-    </div>
+let _current = 'closed';
+let _chosen  = null;
 
-    <button id="btn-confirm" onclick="confirmBureau()" disabled>Confirmer</button>
-    <a href="../index.html" class="btn-retour">← Retour au dashboard</a>
-  </div>
+/* ── Utilitaires ── */
+function pad(n) { return String(n).padStart(2, '0'); }
+function nowStr() { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
 
-  <div id="success">
-    <div id="s-circle">
-      <svg id="s-icon" width="32" height="32" viewBox="0 0 32 32" fill="none"></svg>
-    </div>
-    <p id="s-title"></p>
-    <p id="s-sub"></p>
-    <button class="btn-back" onclick="back()">Modifier à nouveau</button>
-    <a href="../index.html" class="btn-retour">← Retour au dashboard</a>
-  </div>
+/* ── Appliquer un statut dans le DOM ── */
+function appliquerStatut(s, t) {
+  document.getElementById('current-badge').className   = s;
+  document.getElementById('current-dot').className     = s;
+  document.getElementById('current-label').textContent = s === 'open' ? 'Ouvert' : 'Fermé';
+  const timeEl = document.getElementById('current-time');
+  if (timeEl) timeEl.textContent = t ? 'Mis à jour à ' + t : '';
+}
 
-</div>
-<script type="module" src="../bureau.js"></script>
-</body>
-</html>
+/* ── Écoute Firebase en temps réel ── */
+onValue(ref(db, DB_KEY), (snapshot) => {
+  const data = snapshot.val() || {};
+  _current = data.statut || 'closed';
+
+  appliquerStatut(_current, data.heure || null);
+
+  /* Remettre les boutons sur le statut actuel si pas de choix en cours */
+  if (!_chosen || _chosen === _current) {
+    _chosen = _current;
+    document.getElementById('btn-open').className   = 'btn-status' + (_current === 'open'   ? ' sel-open'   : '');
+    document.getElementById('btn-closed').className = 'btn-status' + (_current === 'closed' ? ' sel-closed' : '');
+    document.getElementById('btn-confirm').disabled = true;
+  }
+});
+
+/* ── Sélection Ouvert / Fermé ── */
+window.pick = function(s) {
+  _chosen = s;
+  document.getElementById('btn-open').className   = 'btn-status' + (s === 'open'   ? ' sel-open'   : '');
+  document.getElementById('btn-closed').className = 'btn-status' + (s === 'closed' ? ' sel-closed' : '');
+  document.getElementById('btn-confirm').disabled = (s === _current);
+};
+
+/* ── Confirmation → écriture Firebase ── */
+window.confirmBureau = function() {
+  if (!_chosen || _chosen === _current) return;
+  const t = nowStr();
+
+  update(ref(db, 'bureaux'), {
+    ['bureau_' + bureauId]: { statut: _chosen, heure: t }
+  });
+
+  /* Écran de succès */
+  document.getElementById('main').classList.add('hidden');
+  const circle = document.getElementById('s-circle');
+  const icon   = document.getElementById('s-icon');
+  circle.className = _chosen;
+  if (_chosen === 'open') {
+    icon.innerHTML = '<path d="M10 16l4 4 8-8" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    document.getElementById('s-title').textContent = bureauNumTxt + ' marqué Ouvert';
+  } else {
+    icon.innerHTML = '<path d="M10 10l12 12M22 10l-12 12" stroke="#E24B4A" stroke-width="2" stroke-linecap="round"/>';
+    document.getElementById('s-title').textContent = bureauNumTxt + ' marqué Fermé';
+  }
+  document.getElementById('s-sub').textContent = 'Enregistré à ' + t;
+  document.getElementById('success').classList.add('visible');
+};
+
+/* ── Retour depuis succès ── */
+window.back = function() {
+  _chosen = null;
+  document.getElementById('btn-open').className   = 'btn-status' + (_current === 'open'   ? ' sel-open'   : '');
+  document.getElementById('btn-closed').className = 'btn-status' + (_current === 'closed' ? ' sel-closed' : '');
+  document.getElementById('btn-confirm').disabled = true;
+  document.getElementById('success').classList.remove('visible');
+  document.getElementById('main').classList.remove('hidden');
+};
