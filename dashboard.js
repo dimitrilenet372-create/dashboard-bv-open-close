@@ -1,288 +1,266 @@
 /* ============================================================
    DASHBOARD — JavaScript
-   Page : index.html
+   Firebase Realtime Database (CDN compat — pas de modules ES6)
    ============================================================ */
 
-/* ----------------------------------------------------------
-   DONNÉES — 72 bureaux
-   Modifier ici : nom, adresse pour chaque bureau
-   Format : { nom: "...", adresse: "..." }
-   ---------------------------------------------------------- */
+const firebaseConfig = {
+  apiKey:            "AIzaSyDa8YO-DiY0eH7IQanoYi0Vd62t5DE3Kgo",
+  authDomain:        "mairie-13-bv.firebaseapp.com",
+  databaseURL:       "https://mairie-13-bv-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "mairie-13-bv",
+  storageBucket:     "mairie-13-bv.firebasestorage.app",
+  messagingSenderId: "868318584382",
+  appId:             "1:868318584382:web:69b37e44e5d249b34efb6f",
+  measurementId:     "G-FDFKZMFMJS"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 const BUREAUX_DATA = [
-  { nom: "Mairie Centrale",       adresse: "1 Place de l'Hôtel de Ville" },
-  { nom: "École J. Prévert",      adresse: "2 Rue Jacques Prévert" },
-  { nom: "Gymnase R. Cassin",     adresse: "3 Avenue René Cassin" },
-  { nom: "Salle Polyvalente",     adresse: "4 Rue de la République" },
-  { nom: "Maison de Quartier",    adresse: "5 Boulevard du Général de Gaulle" },
-  { nom: "École P. Curie",        adresse: "6 Rue Pierre et Marie Curie" },
-  { nom: "Bibliothèque Mun.",     adresse: "7 Place de la Liberté" },
-  { nom: "Centre Culturel",       adresse: "8 Rue du Faubourg Saint-Antoine" },
-  { nom: "Foyer Municipal",       adresse: "9 Avenue Jean Jaurès" },
-  { nom: "Espace Citoyens",       adresse: "10 Rue de la Paix" },
-  { nom: "École V. Hugo",         adresse: "11 Rue Victor Hugo" },
-  { nom: "Salle des Fêtes",       adresse: "12 Place du Marché" },
-  { nom: "École J. Moulin",       adresse: "13 Avenue Jean Moulin" },
-  { nom: "Chapelle St-Gilles",    adresse: "14 Rue Saint-Gilles" },
-  { nom: "Collège A. France",     adresse: "15 Rue Anatole France" },
-  { nom: "MJC Nord",              adresse: "16 Boulevard du Nord" },
-  { nom: "Résidence Bellevue",    adresse: "17 Allée Bellevue" },
-  { nom: "École M. Curie",        adresse: "18 Rue Marie Curie" },
-  { nom: "Espace Marguerite",     adresse: "19 Square Marguerite" },
-  { nom: "Salle G. Brassens",     adresse: "20 Rue Georges Brassens" },
-  { nom: "École de Musique",      adresse: "21 Avenue de la Musique" },
-  { nom: "Parc des Sports",       adresse: "22 Allée des Sports" },
-  { nom: "Centre Social",         adresse: "23 Rue de la Solidarité" },
-  { nom: "Éc. Maternelle Iris",   adresse: "24 Impasse des Iris" },
-  { nom: "Foyer des Jeunes",      adresse: "25 Rue de la Jeunesse" },
-  { nom: "Complexe Sportif",      adresse: "26 Boulevard du Sport" },
-  { nom: "École République",      adresse: "27 Place de la République" },
-  { nom: "Espace Voltaire",       adresse: "28 Rue Voltaire" },
-  { nom: "Médiathèque",           adresse: "29 Esplanade des Arts" },
-  { nom: "Salle Mistral",         adresse: "30 Rue Frédéric Mistral" },
-  { nom: "École Molière",         adresse: "31 Rue Molière" },
-  { nom: "Église St-Pierre",      adresse: "32 Place Saint-Pierre" },
-  { nom: "Centre Aquatique",      adresse: "33 Rue de la Piscine" },
-  { nom: "Foyer des Aînés",       adresse: "34 Avenue des Anciens" },
-  { nom: "Hall Expo",             adresse: "35 Boulevard de l'Exposition" },
-  { nom: "École Pasteur",         adresse: "36 Rue Louis Pasteur" },
-  { nom: "Résidence Horizon",     adresse: "37 Allée de l'Horizon" },
-  { nom: "Salle Zola",            adresse: "38 Rue Émile Zola" },
-  { nom: "Maison Assoc.",         adresse: "39 Rue des Associations" },
-  { nom: "Éc. Élémentaire Arc",   adresse: "40 Rue de l'Arc" },
-  { nom: "Stade Municipal",       adresse: "41 Avenue du Stade" },
-  { nom: "Centre Polyvalent",     adresse: "42 Place du Centre" },
-  { nom: "École Jaurès",          adresse: "43 Avenue Jean Jaurès" },
-  { nom: "Salle Balzac",          adresse: "44 Rue Honoré de Balzac" },
-  { nom: "Foyer Rural",           adresse: "45 Route de la Campagne" },
-  { nom: "École Rimbaud",         adresse: "46 Rue Arthur Rimbaud" },
-  { nom: "Espace Verlaine",       adresse: "47 Rue Paul Verlaine" },
-  { nom: "Gymnase Liberté",       adresse: "48 Avenue de la Liberté" },
-  { nom: "École Daudet",          adresse: "49 Rue Alphonse Daudet" },
-  { nom: "Salle Lumière",         adresse: "50 Avenue des Frères Lumière" },
-  { nom: "Centre Démocr.",        adresse: "51 Place de la Démocratie" },
-  { nom: "École Camus",           adresse: "52 Rue Albert Camus" },
-  { nom: "Hall Omnisports",       adresse: "53 Boulevard Omnisports" },
-  { nom: "Espace Colette",        adresse: "54 Rue Colette" },
-  { nom: "Foyer du Peuple",       adresse: "55 Place du Peuple" },
-  { nom: "École Flaubert",        adresse: "56 Rue Gustave Flaubert" },
-  { nom: "Résidence Aurore",      adresse: "57 Allée de l'Aurore" },
-  { nom: "Salle Sand",            adresse: "58 Rue George Sand" },
-  { nom: "Centre Animation",      adresse: "59 Square de l'Animation" },
-  { nom: "École Malraux",         adresse: "60 Avenue André Malraux" },
-  { nom: "MJC Sud",               adresse: "61 Boulevard du Sud" },
-  { nom: "Complexe Renoir",       adresse: "62 Rue Auguste Renoir" },
-  { nom: "École Monet",           adresse: "63 Rue Claude Monet" },
-  { nom: "Salle Debussy",         adresse: "64 Avenue Claude Debussy" },
-  { nom: "Espace Chopin",         adresse: "65 Rue Frédéric Chopin" },
-  { nom: "Centre Baudelaire",     adresse: "66 Rue Charles Baudelaire" },
-  { nom: "École Verlaine",        adresse: "67 Rue Paul Verlaine" },
-  { nom: "Foyer Stendhal",        adresse: "68 Rue Stendhal" },
-  { nom: "Salle Hugo",            adresse: "69 Place Victor Hugo" },
-  { nom: "École Zola",            adresse: "70 Rue Émile Zola" },
-  { nom: "Mairie Annexe",         adresse: "71 Avenue de la Mairie" },
-  { nom: "Centre Laïque",         adresse: "72 Rue de la Laïcité" },
+  { nom: "Mairie d'Arrondissement", adresse: "1 Place d'Italie, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "13 Rue Fagon, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "13 Rue Fagon, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "42 Rue Jenner, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "42 Rue Jenner, 75013 Paris" },
+  { nom: "Ecole Elementaire B", adresse: "46 Rue Jenner, 75013 Paris" },
+  { nom: "Ecole Nationale de Chimie Physique et Biologie", adresse: "12 Rue du Banquier, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "8 Rue Ricaut, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "8 Rue Ricaut, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "173 Rue du Chateau des Rentiers, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "173 Rue du Chateau des Rentiers, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "33 Place Jeanne d'Arc, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "33 Place Jeanne d'Arc, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "103 Rue du Chateau des Rentiers, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "57 Rue Baudricourt, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "57 Rue Baudricourt, 75013 Paris" },
+  { nom: "Ecole Elementaire B", adresse: "55 Rue Baudricourt, 75013 Paris" },
+  { nom: "Ecole Elementaire B", adresse: "55 Rue Baudricourt, 75013 Paris" },
+  { nom: "Ecole Elementaire B", adresse: "47 Avenue d'Ivry, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "3 Rue Émile Levassor, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "51 Avenue de la Porte d'Ivry, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "9 Rue Franc Nohain, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "37 Rue du Chateau des Rentiers, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "31 Rue du Chateau des Rentiers, 75013 Paris" },
+  { nom: "Gymnase Marcel Cerdan", adresse: "5bis Rue Eugene Oudine, 75013 Paris" },
+  { nom: "Gymnase Marcel Cerdan", adresse: "5bis Rue Eugene Oudine, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "15 Rue de Domremy, 75013 Paris" },
+  { nom: "Ecole Elementaire B", adresse: "30 Place Jeanne d'Arc, 75013 Paris" },
+  { nom: "Ecole Elementaire B", adresse: "30 Place Jeanne d'Arc, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "63 Rue Dunois, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "64 Rue Dunois, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "60 Rue Dunois, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "8 Rue George Balanchine, 75013 Paris" },
+  { nom: "Ecole Polyvalente", adresse: "21 Rue Primo Levi, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "103 Avenue de Choisy, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "103 Avenue de Choisy, 75013 Paris" },
+  { nom: "College Camille Claudel", adresse: "4bis Avenue de Choisy, 75013 Paris" },
+  { nom: "College Camille Claudel", adresse: "4bis Avenue de Choisy, 75013 Paris" },
+  { nom: "Lycee Professionnel Gaston Bachelard", adresse: "2 Rue Tagore, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "157 Rue de Tolbiac, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "5 Rue Damesme, 75013 Paris" },
+  { nom: "College Evariste Galois", adresse: "11 Rue du Docteur Bourneville, 75013 Paris" },
+  { nom: "Ecole Polyvalente", adresse: "77 Rue Damesme, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "8 Rue Kuss, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "8 Rue Kuss, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "84 Boulevard Kellermann, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "87 Rue Brillat Savarin, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "5 Rue de la Providence, 75013 Paris" },
+  { nom: "Ecole Elementaire A", adresse: "5 Rue de la Providence, 75013 Paris" },
+  { nom: "Ecole Elementaire B", adresse: "7 Rue de la Providence, 75013 Paris" },
+  { nom: "College Georges Braque", adresse: "5 Rue Henri Becque, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "16 Rue Wurtz, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "16 Rue Wurtz, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "16 Rue Wurtz, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "100 Rue de la Glaciere, 75013 Paris" },
+  { nom: "College Moulin des Pres", adresse: "18 Rue du Moulin des Pres, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "38 Rue Vandrezanne, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "38 Rue Vandrezanne, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "40 Rue Vandrezanne, 75013 Paris" },
+  { nom: "Gymnase Auguste Blanqui", adresse: "26 Boulevard Auguste Blanqui, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "2 Rue Paul Gervais, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "13 Rue Vulpian, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "140 Rue Leon Maurice Nordmann, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "140 Rue Leon Maurice Nordmann, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "30 Boulevard Arago, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "30 Boulevard Arago, 75013 Paris" },
+  { nom: "Ecole Maternelle", adresse: "11 Rue de Croulebarbe, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "40 Rue du Chateau des Rentiers, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "9 Rue Auguste Perret, 75013 Paris" },
+  { nom: "Ecole Elementaire", adresse: "8 Rue George Balanchine, 75013 Paris" },
+  { nom: "Ecole Polyvalente", adresse: "31 Boulevard du General Jean Simon, 75013 Paris" },
+  { nom: "Ecole Polyvalente Grands Moulins", adresse: "47 Rue des Grands Moulins, 75013 Paris" },
 ];
 
-/* ----------------------------------------------------------
-   localStorage
-   ---------------------------------------------------------- */
-
-const STORAGE_KEY = 'bureaux_statuts';
-
-function sauvegarder() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(
-      bureaux.map(b => ({ statut: b.statut, heure: b.heure }))
-    ));
-  } catch (e) {}
-}
-
-function charger() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const data = JSON.parse(saved);
-      return BUREAUX_DATA.map((d, i) => ({
-        id:      i + 1,
-        nom:     d.nom,
-        adresse: d.adresse,
-        statut:  (data[i] && data[i].statut) ? data[i].statut : 'closed',
-        heure:   (data[i] && data[i].heure)  ? data[i].heure  : null
-      }));
-    }
-  } catch (e) {}
-  return BUREAUX_DATA.map((d, i) => ({
-    id:      i + 1,
-    nom:     d.nom,
-    adresse: d.adresse,
-    statut:  'closed',
-    heure:   null
-  }));
-}
-
-const bureaux = charger();
-
-let _filter   = 'all';
+/* ── État local ── */
+let bureaux   = BUREAUX_DATA.map((d, i) => ({ id: i+1, nom: d.nom, adresse: d.adresse, statut: "closed", heure: null }));
+let _filter   = "all";
 let _activeId = null;
 let _chosen   = null;
 
-/* ----------------------------------------------------------
-   Utilitaires
-   ---------------------------------------------------------- */
+function pad(n) { return String(n).padStart(2, "0"); }
+function nowStr() { const d = new Date(); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
 
-function pad(n) { return String(n).padStart(2, '0'); }
-function nowStr() {
-  const d = new Date();
-  return pad(d.getHours()) + ':' + pad(d.getMinutes());
+/* ── Feux d'artifice ── */
+let _fireworksActive = false;
+let _fireworksFrame  = null;
+const PARTICLES = [];
+
+function lancerFeuArtifice(canvas) {
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height * 0.6;
+  const hue = Math.random() * 360;
+  const count = 80 + Math.floor(Math.random() * 40);
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 / count) * i;
+    const speed = 2 + Math.random() * 4;
+    PARTICLES.push({ x, y,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+      alpha: 1, hue: hue + Math.random() * 40 - 20,
+      size: 2 + Math.random() * 2, decay: 0.012 + Math.random() * 0.008 });
+  }
 }
 
-/* ----------------------------------------------------------
-   Stats
-   ---------------------------------------------------------- */
+function animerFeux() {
+  const canvas = document.getElementById("fw");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  ctx.fillStyle = "rgba(0,0,0,0.15)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (Math.random() < 0.05) lancerFeuArtifice(canvas);
+  for (let i = PARTICLES.length - 1; i >= 0; i--) {
+    const p = PARTICLES[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.alpha -= p.decay;
+    if (p.alpha <= 0) { PARTICLES.splice(i, 1); continue; }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = "hsla(" + p.hue + ",100%,65%," + p.alpha + ")";
+    ctx.fill();
+  }
+  _fireworksFrame = requestAnimationFrame(animerFeux);
+}
 
+function startFireworks() {
+  if (_fireworksActive) return;
+  _fireworksActive = true;
+  const c = document.getElementById("fw");
+  if (c) c.style.display = "block";
+  animerFeux();
+  const popup = document.getElementById("popup-all-open");
+  if (popup) popup.style.display = "flex";
+}
+
+function stopFireworks() {
+  if (!_fireworksActive) return;
+  _fireworksActive = false;
+  if (_fireworksFrame) cancelAnimationFrame(_fireworksFrame);
+  const c = document.getElementById("fw");
+  if (c) { c.style.display = "none"; c.getContext("2d").clearRect(0,0,c.width,c.height); }
+  PARTICLES.length = 0;
+}
+
+function fermerPopup() {
+  const popup = document.getElementById("popup-all-open");
+  if (popup) popup.style.display = "none";
+  stopFireworks();
+}
+
+/* ── Stats ── */
 function renderStats() {
-  const open = bureaux.filter(b => b.statut === 'open').length;
-  document.getElementById('s-open').textContent   = open + ' ouverts';
-  document.getElementById('s-closed').textContent = (72 - open) + ' fermés';
+  const open = bureaux.filter(b => b.statut === "open").length;
+  document.getElementById("s-open").textContent   = open + " ouverts";
+  document.getElementById("s-closed").textContent = (72 - open) + " fermés";
+  if (open === 72) startFireworks();
+  else             stopFireworks();
 }
 
-/* ----------------------------------------------------------
-   Grille — recherche sur numéro, nom ET adresse
-   ---------------------------------------------------------- */
-
+/* ── Grille ── */
 function render() {
-  const q    = document.getElementById('search').value.toLowerCase();
+  const q    = document.getElementById("search").value.toLowerCase();
   const list = bureaux.filter(b => {
-    const mf = _filter === 'all' || b.statut === _filter;
-    const ms = !q
-      || b.nom.toLowerCase().includes(q)
-      || b.adresse.toLowerCase().includes(q)
-      || pad(b.id).includes(q);
+    const mf = _filter === "all" || b.statut === _filter;
+    const ms = !q || b.nom.toLowerCase().includes(q) || b.adresse.toLowerCase().includes(q) || pad(b.id).includes(q);
     return mf && ms;
   });
-
-  const grid = document.getElementById('grid');
-
-  if (!list.length) {
-    grid.innerHTML = '<p class="empty">Aucun bureau trouvé</p>';
-    renderStats();
-    return;
-  }
-
+  const grid = document.getElementById("grid");
+  if (!list.length) { grid.innerHTML = '<p class="empty">Aucun bureau trouvé</p>'; renderStats(); return; }
   grid.innerHTML = list.map(b => `
     <div class="card ${b.statut}" onclick="openModal(${b.id})">
       <span class="c-num">Bureau ${pad(b.id)}</span>
       <span class="c-name">${b.nom}</span>
       <span class="c-adresse">${b.adresse}</span>
-      <span class="c-badge ${b.statut}">
-        <span class="c-dot ${b.statut}"></span>
-        ${b.statut === 'open' ? 'Ouvert' : 'Fermé'}
-      </span>
-      ${b.heure ? `<span class="c-time">${b.heure}</span>` : ''}
+      <span class="c-badge ${b.statut}"><span class="c-dot ${b.statut}"></span>${b.statut === "open" ? "Ouvert" : "Fermé"}</span>
+      ${b.heure ? `<span class="c-time">${b.heure}</span>` : ""}
     </div>
-  `).join('');
-
+  `).join("");
   renderStats();
 }
 
-/* ----------------------------------------------------------
-   Filtres
-   ---------------------------------------------------------- */
-
+/* ── Filtres ── */
 function setF(f) {
   _filter = f;
-  document.getElementById('f-all').className    = 'f-btn' + (f === 'all'    ? ' a-all'    : '');
-  document.getElementById('f-open').className   = 'f-btn' + (f === 'open'   ? ' a-open'   : '');
-  document.getElementById('f-closed').className = 'f-btn' + (f === 'closed' ? ' a-closed' : '');
+  document.getElementById("f-all").className    = "f-btn" + (f === "all"    ? " a-all"    : "");
+  document.getElementById("f-open").className   = "f-btn" + (f === "open"   ? " a-open"   : "");
+  document.getElementById("f-closed").className = "f-btn" + (f === "closed" ? " a-closed" : "");
   render();
 }
 
-/* ----------------------------------------------------------
-   Modale — ouverture
-   ---------------------------------------------------------- */
-
+/* ── Modale ── */
 function openModal(id) {
-  _activeId = id;
-  _chosen   = null;
-  const b   = bureaux[id - 1];
-
-  document.getElementById('modal-title').textContent         = 'Bureau ' + pad(b.id);
-  document.getElementById('modal-sub').textContent           = b.nom;
-  document.getElementById('modal-adresse').textContent       = b.adresse;
-  document.getElementById('modal-current').className         = 'modal-current ' + b.statut;
-  document.getElementById('modal-dot').className             = 'modal-dot ' + b.statut;
-  document.getElementById('modal-current-label').textContent = b.statut === 'open' ? 'Ouvert' : 'Fermé';
-
-  document.getElementById('btn-open').className   = 'btn-status' + (b.statut === 'open'   ? ' sel-open'   : '');
-  document.getElementById('btn-closed').className = 'btn-status' + (b.statut === 'closed' ? ' sel-closed' : '');
-
+  _activeId = id; _chosen = null;
+  const b = bureaux[id - 1];
+  document.getElementById("modal-title").textContent         = "Bureau " + pad(b.id);
+  document.getElementById("modal-sub").textContent           = b.nom;
+  document.getElementById("modal-adresse").textContent       = b.adresse;
+  document.getElementById("modal-current").className         = "modal-current " + b.statut;
+  document.getElementById("modal-dot").className             = "modal-dot " + b.statut;
+  document.getElementById("modal-current-label").textContent = b.statut === "open" ? "Ouvert" : "Fermé";
+  document.getElementById("btn-open").className   = "btn-status" + (b.statut === "open"   ? " sel-open"   : "");
+  document.getElementById("btn-closed").className = "btn-status" + (b.statut === "closed" ? " sel-closed" : "");
   _chosen = b.statut;
-  document.getElementById('btn-confirm').disabled = false;
-  document.getElementById('overlay').classList.add('visible');
+  document.getElementById("btn-confirm").disabled = false;
+  document.getElementById("overlay").classList.add("visible");
 }
-
-/* ----------------------------------------------------------
-   Modale — fermeture
-   ---------------------------------------------------------- */
 
 function closeModal() {
-  document.getElementById('overlay').classList.remove('visible');
-  _activeId = null;
-  _chosen   = null;
+  document.getElementById("overlay").classList.remove("visible");
+  _activeId = null; _chosen = null;
 }
-
-/* ----------------------------------------------------------
-   Sélection Ouvert / Fermé
-   ---------------------------------------------------------- */
 
 function selectStatus(s) {
   _chosen = s;
-  document.getElementById('btn-open').className   = 'btn-status' + (s === 'open'   ? ' sel-open'   : '');
-  document.getElementById('btn-closed').className = 'btn-status' + (s === 'closed' ? ' sel-closed' : '');
-  document.getElementById('modal-current').className         = 'modal-current ' + s;
-  document.getElementById('modal-dot').className             = 'modal-dot ' + s;
-  document.getElementById('modal-current-label').textContent = s === 'open' ? 'Ouvert' : 'Fermé';
-  document.getElementById('btn-confirm').disabled = (s === bureaux[_activeId - 1].statut);
+  document.getElementById("btn-open").className   = "btn-status" + (s === "open"   ? " sel-open"   : "");
+  document.getElementById("btn-closed").className = "btn-status" + (s === "closed" ? " sel-closed" : "");
+  document.getElementById("modal-current").className         = "modal-current " + s;
+  document.getElementById("modal-dot").className             = "modal-dot " + s;
+  document.getElementById("modal-current-label").textContent = s === "open" ? "Ouvert" : "Fermé";
+  document.getElementById("btn-confirm").disabled = (s === bureaux[_activeId - 1].statut);
 }
 
-/* ----------------------------------------------------------
-   Confirmation
-   ---------------------------------------------------------- */
+function confirmStatus() {
+  if (!_activeId || !_chosen) return;
+  const b  = bureaux[_activeId - 1];
+  const t  = nowStr();
+  db.ref("bureaux").update({ ["bureau_" + pad(b.id)]: { statut: _chosen, heure: t } });
+  closeModal();
+}
 
-// function confirmStatus() {
-//   if (!_activeId || !_chosen) return;
-//   const b  = bureaux[_activeId - 1];
-//   b.statut = _chosen;
-//   b.heure  = nowStr();
-//   sauvegarder();
-//   closeModal();
-//   render();
-//   showToast('Bureau ' + pad(b.id) + ' — ' + (_chosen === 'open' ? 'Ouvert' : 'Fermé'));
-// }
-
-/* ----------------------------------------------------------
-   Toast
-   ---------------------------------------------------------- */
-
-// function showToast(msg) {
-//   const t = document.getElementById('toast');
-//   t.textContent = msg;
-//   t.classList.add('show');
-//   setTimeout(() => t.classList.remove('show'), 2500);
-// }
-
-/* ----------------------------------------------------------
-   Init
-   ---------------------------------------------------------- */
-
-document.getElementById('search').addEventListener('input', render);
-
-document.getElementById('overlay').addEventListener('click', function (e) {
-  if (e.target === document.getElementById('overlay')) closeModal();
+/* ── Écoute Firebase temps réel ── */
+db.ref("bureaux").on("value", function(snapshot) {
+  document.getElementById("loading").style.display = "none";
+  const data = snapshot.val() || {};
+  bureaux = BUREAUX_DATA.map((d, i) => {
+    const key   = "bureau_" + pad(i + 1);
+    const saved = data[key] || {};
+    return { id: i+1, nom: d.nom, adresse: d.adresse, statut: saved.statut || "closed", heure: saved.heure || null };
+  });
+  render();
 });
 
-document.getElementById('date-label').textContent =
-  new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-
-render();
+/* ── Init ── */
+document.getElementById("search").addEventListener("input", render);
+document.getElementById("overlay").addEventListener("click", function(e) {
+  if (e.target === document.getElementById("overlay")) closeModal();
+});
+document.getElementById("date-label").textContent =
+  new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });

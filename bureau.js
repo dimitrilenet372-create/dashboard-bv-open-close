@@ -1,206 +1,91 @@
 /* ============================================================
-   BUREAU INDIVIDUEL — CSS
+   BUREAU INDIVIDUEL — JavaScript
+   Firebase Realtime Database (CDN compat — pas de modules ES6)
    ============================================================ */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+const firebaseConfig = {
+  apiKey:            "AIzaSyDa8YO-DiY0eH7IQanoYi0Vd62t5DE3Kgo",
+  authDomain:        "mairie-13-bv.firebaseapp.com",
+  databaseURL:       "https://mairie-13-bv-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "mairie-13-bv",
+  storageBucket:     "mairie-13-bv.firebasestorage.app",
+  messagingSenderId: "868318584382",
+  appId:             "1:868318584382:web:69b37e44e5d249b34efb6f",
+  measurementId:     "G-FDFKZMFMJS"
+};
 
-:root {
-  --color-open-bg:       #e1f5ee;
-  --color-open-text:     #0f6e56;
-  --color-open-border:   #1d9e75;
-  --color-closed-bg:     #fcebeb;
-  --color-closed-text:   #a32d2d;
-  --color-closed-border: #e24b4a;
-  --color-accent:        #185fa5;
-  --color-accent-text:   #e6f1fb;
-  --color-bg:            #ffffff;
-  --color-bg-secondary:  #f5f5f4;
-  --color-text-primary:   #1a1a1a;
-  --color-text-secondary: #6b6b6b;
-  --color-text-tertiary:  #9d9d9d;
-  --color-border:        rgba(0,0,0,0.10);
-  --color-border-medium: rgba(0,0,0,0.20);
-  --radius-md:   8px;
-  --radius-lg:   12px;
-  --radius-full: 9999px;
+/* Initialiser Firebase (si pas déjà fait) */
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+/* ── Numéro du bureau lu depuis le DOM ── */
+const bureauNumEl  = document.querySelector(".bureau-num");
+const bureauNumTxt = bureauNumEl ? bureauNumEl.textContent.trim() : "Bureau 01";
+const bureauId     = bureauNumTxt.replace("Bureau ", "").trim();
+const DB_KEY       = "bureaux/bureau_" + bureauId;
+
+let _current = "closed";
+let _chosen  = null;
+
+function pad(n) { return String(n).padStart(2, "0"); }
+function nowStr() { const d = new Date(); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+
+function appliquerStatut(s, t) {
+  document.getElementById("current-badge").className   = s;
+  document.getElementById("current-dot").className     = s;
+  document.getElementById("current-label").textContent = s === "open" ? "Ouvert" : "Fermé";
+  const timeEl = document.getElementById("current-time");
+  if (timeEl) timeEl.textContent = t ? "Mis à jour à " + t : "";
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  min-height: 100vh;
+function pick(s) {
+  _chosen = s;
+  document.getElementById("btn-open").className   = "btn-status" + (s === "open"   ? " sel-open"   : "");
+  document.getElementById("btn-closed").className = "btn-status" + (s === "closed" ? " sel-closed" : "");
+  document.getElementById("btn-confirm").disabled = (s === _current);
 }
 
-/* PAGE */
-.page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.25rem;
-  gap: 2rem;
+function confirmBureau() {
+  if (!_chosen || _chosen === _current) return;
+  const t = nowStr();
+  const update = {};
+  update["bureau_" + bureauId] = { statut: _chosen, heure: t };
+  db.ref("bureaux").update(update);
+  document.getElementById("main").classList.add("hidden");
+  const circle = document.getElementById("s-circle");
+  const icon   = document.getElementById("s-icon");
+  circle.className = _chosen;
+  if (_chosen === "open") {
+    icon.innerHTML = '<path d="M10 16l4 4 8-8" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    document.getElementById("s-title").textContent = bureauNumTxt + " marqué Ouvert";
+  } else {
+    icon.innerHTML = '<path d="M10 10l12 12M22 10l-12 12" stroke="#E24B4A" stroke-width="2" stroke-linecap="round"/>';
+    document.getElementById("s-title").textContent = bureauNumTxt + " marqué Fermé";
+  }
+  document.getElementById("s-sub").textContent = "Enregistré à " + t;
+  document.getElementById("success").classList.add("visible");
 }
 
-/* INFOS BUREAU */
-.bureau-info {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.bureau-num  { font-size: 13px; font-weight: 600; color: black; letter-spacing: 0.08em; text-transform: uppercase; }
-.bureau-name { font-size: 22px; font-weight: 500; line-height: 1.25; }
-.bureau-sub  { font-size: 14px; color: var(--color-text-secondary); }
-.bureau-adresse  { font-size: 11px; color: grey; }
-
-/* STATUT ACTUEL */
-.status-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.status-label { font-size: 12px; color: var(--color-text-tertiary); }
-
-#current-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
-  border-radius: var(--radius-full);
-  font-size: 16px;
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s;
-}
-#current-badge.open   { background: var(--color-open-bg);   color: var(--color-open-text); }
-#current-badge.closed { background: var(--color-closed-bg); color: var(--color-closed-text); }
-
-#current-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-#current-dot.open   { background: var(--color-open-border); }
-#current-dot.closed { background: var(--color-closed-border); }
-
-#current-time { font-size: 12px; color: var(--color-text-tertiary); }
-
-/* SÉPARATEUR */
-.sep {
-  width: 100%;
-  max-width: 360px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--color-text-tertiary);
-}
-.sep::before, .sep::after {
-  content: '';
-  flex: 1;
-  height: 0.5px;
-  background: var(--color-border);
+function back() {
+  _chosen = null;
+  document.getElementById("btn-open").className   = "btn-status" + (_current === "open"   ? " sel-open"   : "");
+  document.getElementById("btn-closed").className = "btn-status" + (_current === "closed" ? " sel-closed" : "");
+  document.getElementById("btn-confirm").disabled = true;
+  document.getElementById("success").classList.remove("visible");
+  document.getElementById("main").classList.remove("hidden");
 }
 
-/* BTN GROUP */
-.btn-group {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  max-width: 360px;
-}
-
-.btn-status {
-  flex: 1;
-  padding: 16px 12px;
-  border-radius: var(--radius-lg);
-  border: 1.5px solid var(--color-border);
-  background: var(--color-bg-secondary);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-text-secondary);
-  transition: all 0.15s;
-}
-.btn-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-bg);
-}
-.btn-status.sel-open   { background: var(--color-open-bg);   border-color: var(--color-open-border);   color: var(--color-open-text); }
-.btn-status.sel-closed { background: var(--color-closed-bg); border-color: var(--color-closed-border); color: var(--color-closed-text); }
-.btn-status.sel-open   .btn-icon { background: #eaf3de; }
-.btn-status.sel-closed .btn-icon { background: #fcebeb; }
-
-/* CONFIRMER */
-#btn-confirm {
-  width: 100%;
-  max-width: 360px;
-  padding: 15px;
-  border-radius: var(--radius-lg);
-  border: none;
-  background: var(--color-accent);
-  color: var(--color-accent-text);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-#btn-confirm:hover:not(:disabled) { opacity: 0.88; }
-#btn-confirm:disabled { opacity: 0.3; cursor: default; }
-
-/* ÉCRANS */
-#main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  width: 100%;
-}
-#main.hidden { display: none; }
-
-#success {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  text-align: center;
-}
-#success.visible { display: flex; }
-
-#s-circle {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#s-circle.open   { background: var(--color-open-bg); }
-#s-circle.closed { background: var(--color-closed-bg); }
-
-#s-title { font-size: 20px; font-weight: 500; }
-#s-sub   { font-size: 14px; color: var(--color-text-secondary); }
-
-.btn-back {
-  margin-top: 0.5rem;
-  padding: 10px 24px;
-  border-radius: var(--radius-md);
-  border: 0.5px solid var(--color-border-medium);
-  background: transparent;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: background 0.12s;
-}
-.btn-back:hover { background: var(--color-bg-secondary); }
-
-@media (max-width: 400px) {
-  .btn-group { flex-direction: column; }
-}
+/* ── Écoute Firebase temps réel ── */
+db.ref(DB_KEY).on("value", function(snapshot) {
+  const data = snapshot.val() || {};
+  _current = data.statut || "closed";
+  appliquerStatut(_current, data.heure || null);
+  if (!_chosen || _chosen === _current) {
+    _chosen = _current;
+    document.getElementById("btn-open").className   = "btn-status" + (_current === "open"   ? " sel-open"   : "");
+    document.getElementById("btn-closed").className = "btn-status" + (_current === "closed" ? " sel-closed" : "");
+    document.getElementById("btn-confirm").disabled = true;
+  }
+});
