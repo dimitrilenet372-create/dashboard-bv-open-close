@@ -1,226 +1,288 @@
 /* ============================================================
-   DASHBOARD — CSS
+   DASHBOARD — JavaScript
+   Page : index.html
    ============================================================ */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ----------------------------------------------------------
+   DONNÉES — 72 bureaux
+   Modifier ici : nom, adresse pour chaque bureau
+   Format : { nom: "...", adresse: "..." }
+   ---------------------------------------------------------- */
 
-:root {
-  --color-open-bg:       #e1f5ee;
-  --color-open-text:     #0f6e56;
-  --color-open-border:   #1d9e75;
-  --color-closed-bg:     #fcebeb;
-  --color-closed-text:   #a32d2d;
-  --color-closed-border: #e24b4a;
-  --color-accent:        #185fa5;
-  --color-accent-text:   #e6f1fb;
-  --color-bg:            #ffffff;
-  --color-bg-secondary:  #f5f5f4;
-  --color-text-primary:   #1a1a1a;
-  --color-text-secondary: #6b6b6b;
-  --color-text-tertiary:  #9d9d9d;
-  --color-border:        rgba(0,0,0,0.10);
-  --color-border-medium: rgba(0,0,0,0.20);
-  --radius-md:   8px;
-  --radius-lg:   12px;
-  --radius-xl:   16px;
-  --radius-full: 9999px;
+const BUREAUX_DATA = [
+  { nom: "Mairie Centrale",       adresse: "1 Place de l'Hôtel de Ville" },
+  { nom: "École J. Prévert",      adresse: "2 Rue Jacques Prévert" },
+  { nom: "Gymnase R. Cassin",     adresse: "3 Avenue René Cassin" },
+  { nom: "Salle Polyvalente",     adresse: "4 Rue de la République" },
+  { nom: "Maison de Quartier",    adresse: "5 Boulevard du Général de Gaulle" },
+  { nom: "École P. Curie",        adresse: "6 Rue Pierre et Marie Curie" },
+  { nom: "Bibliothèque Mun.",     adresse: "7 Place de la Liberté" },
+  { nom: "Centre Culturel",       adresse: "8 Rue du Faubourg Saint-Antoine" },
+  { nom: "Foyer Municipal",       adresse: "9 Avenue Jean Jaurès" },
+  { nom: "Espace Citoyens",       adresse: "10 Rue de la Paix" },
+  { nom: "École V. Hugo",         adresse: "11 Rue Victor Hugo" },
+  { nom: "Salle des Fêtes",       adresse: "12 Place du Marché" },
+  { nom: "École J. Moulin",       adresse: "13 Avenue Jean Moulin" },
+  { nom: "Chapelle St-Gilles",    adresse: "14 Rue Saint-Gilles" },
+  { nom: "Collège A. France",     adresse: "15 Rue Anatole France" },
+  { nom: "MJC Nord",              adresse: "16 Boulevard du Nord" },
+  { nom: "Résidence Bellevue",    adresse: "17 Allée Bellevue" },
+  { nom: "École M. Curie",        adresse: "18 Rue Marie Curie" },
+  { nom: "Espace Marguerite",     adresse: "19 Square Marguerite" },
+  { nom: "Salle G. Brassens",     adresse: "20 Rue Georges Brassens" },
+  { nom: "École de Musique",      adresse: "21 Avenue de la Musique" },
+  { nom: "Parc des Sports",       adresse: "22 Allée des Sports" },
+  { nom: "Centre Social",         adresse: "23 Rue de la Solidarité" },
+  { nom: "Éc. Maternelle Iris",   adresse: "24 Impasse des Iris" },
+  { nom: "Foyer des Jeunes",      adresse: "25 Rue de la Jeunesse" },
+  { nom: "Complexe Sportif",      adresse: "26 Boulevard du Sport" },
+  { nom: "École République",      adresse: "27 Place de la République" },
+  { nom: "Espace Voltaire",       adresse: "28 Rue Voltaire" },
+  { nom: "Médiathèque",           adresse: "29 Esplanade des Arts" },
+  { nom: "Salle Mistral",         adresse: "30 Rue Frédéric Mistral" },
+  { nom: "École Molière",         adresse: "31 Rue Molière" },
+  { nom: "Église St-Pierre",      adresse: "32 Place Saint-Pierre" },
+  { nom: "Centre Aquatique",      adresse: "33 Rue de la Piscine" },
+  { nom: "Foyer des Aînés",       adresse: "34 Avenue des Anciens" },
+  { nom: "Hall Expo",             adresse: "35 Boulevard de l'Exposition" },
+  { nom: "École Pasteur",         adresse: "36 Rue Louis Pasteur" },
+  { nom: "Résidence Horizon",     adresse: "37 Allée de l'Horizon" },
+  { nom: "Salle Zola",            adresse: "38 Rue Émile Zola" },
+  { nom: "Maison Assoc.",         adresse: "39 Rue des Associations" },
+  { nom: "Éc. Élémentaire Arc",   adresse: "40 Rue de l'Arc" },
+  { nom: "Stade Municipal",       adresse: "41 Avenue du Stade" },
+  { nom: "Centre Polyvalent",     adresse: "42 Place du Centre" },
+  { nom: "École Jaurès",          adresse: "43 Avenue Jean Jaurès" },
+  { nom: "Salle Balzac",          adresse: "44 Rue Honoré de Balzac" },
+  { nom: "Foyer Rural",           adresse: "45 Route de la Campagne" },
+  { nom: "École Rimbaud",         adresse: "46 Rue Arthur Rimbaud" },
+  { nom: "Espace Verlaine",       adresse: "47 Rue Paul Verlaine" },
+  { nom: "Gymnase Liberté",       adresse: "48 Avenue de la Liberté" },
+  { nom: "École Daudet",          adresse: "49 Rue Alphonse Daudet" },
+  { nom: "Salle Lumière",         adresse: "50 Avenue des Frères Lumière" },
+  { nom: "Centre Démocr.",        adresse: "51 Place de la Démocratie" },
+  { nom: "École Camus",           adresse: "52 Rue Albert Camus" },
+  { nom: "Hall Omnisports",       adresse: "53 Boulevard Omnisports" },
+  { nom: "Espace Colette",        adresse: "54 Rue Colette" },
+  { nom: "Foyer du Peuple",       adresse: "55 Place du Peuple" },
+  { nom: "École Flaubert",        adresse: "56 Rue Gustave Flaubert" },
+  { nom: "Résidence Aurore",      adresse: "57 Allée de l'Aurore" },
+  { nom: "Salle Sand",            adresse: "58 Rue George Sand" },
+  { nom: "Centre Animation",      adresse: "59 Square de l'Animation" },
+  { nom: "École Malraux",         adresse: "60 Avenue André Malraux" },
+  { nom: "MJC Sud",               adresse: "61 Boulevard du Sud" },
+  { nom: "Complexe Renoir",       adresse: "62 Rue Auguste Renoir" },
+  { nom: "École Monet",           adresse: "63 Rue Claude Monet" },
+  { nom: "Salle Debussy",         adresse: "64 Avenue Claude Debussy" },
+  { nom: "Espace Chopin",         adresse: "65 Rue Frédéric Chopin" },
+  { nom: "Centre Baudelaire",     adresse: "66 Rue Charles Baudelaire" },
+  { nom: "École Verlaine",        adresse: "67 Rue Paul Verlaine" },
+  { nom: "Foyer Stendhal",        adresse: "68 Rue Stendhal" },
+  { nom: "Salle Hugo",            adresse: "69 Place Victor Hugo" },
+  { nom: "École Zola",            adresse: "70 Rue Émile Zola" },
+  { nom: "Mairie Annexe",         adresse: "71 Avenue de la Mairie" },
+  { nom: "Centre Laïque",         adresse: "72 Rue de la Laïcité" },
+];
+
+/* ----------------------------------------------------------
+   localStorage
+   ---------------------------------------------------------- */
+
+const STORAGE_KEY = 'bureaux_statuts';
+
+function sauvegarder() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(
+      bureaux.map(b => ({ statut: b.statut, heure: b.heure }))
+    ));
+  } catch (e) {}
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  min-height: 100vh;
+function charger() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      return BUREAUX_DATA.map((d, i) => ({
+        id:      i + 1,
+        nom:     d.nom,
+        adresse: d.adresse,
+        statut:  (data[i] && data[i].statut) ? data[i].statut : 'closed',
+        heure:   (data[i] && data[i].heure)  ? data[i].heure  : null
+      }));
+    }
+  } catch (e) {}
+  return BUREAUX_DATA.map((d, i) => ({
+    id:      i + 1,
+    nom:     d.nom,
+    adresse: d.adresse,
+    statut:  'closed',
+    heure:   null
+  }));
 }
 
-/* HEADER */
-.header {
-  padding: 1rem 1.25rem;
-  border-bottom: 0.5px solid var(--color-border);
-  display: flex; align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap; gap: 8px;
-}
-.header h1 { font-size: 17px; font-weight: 500; }
-.header p  { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+const bureaux = charger();
 
-/* STATS */
-.stats { display: flex; gap: 6px; flex-wrap: wrap; }
-.stat  { font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-md); }
-.stat-open   { background: var(--color-open-bg);      color: var(--color-open-text); }
-.stat-closed { background: var(--color-closed-bg);    color: var(--color-closed-text); }
-.stat-total  { background: var(--color-bg-secondary); color: var(--color-text-secondary); }
+let _filter   = 'all';
+let _activeId = null;
+let _chosen   = null;
 
-/* TOOLBAR */
-.toolbar {
-  padding: 0.75rem 1.25rem;
-  border-bottom: 0.5px solid var(--color-border);
-  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-}
-#search {
-  flex: 1; min-width: 140px; height: 34px;
-  padding: 6px 10px; font-size: 14px;
-  border: 0.5px solid var(--color-border-medium);
-  border-radius: var(--radius-md);
-  background: var(--color-bg); color: var(--color-text-primary);
-  outline: none;
-}
-#search:focus { border-color: var(--color-accent); }
+/* ----------------------------------------------------------
+   Utilitaires
+   ---------------------------------------------------------- */
 
-.f-btn {
-  height: 34px; padding: 0 12px; font-size: 13px;
-  border-radius: var(--radius-md);
-  border: 0.5px solid var(--color-border-medium);
-  background: transparent; color: var(--color-text-secondary);
-  cursor: pointer; transition: background 0.12s, color 0.12s;
-}
-.f-btn.a-all    { background: var(--color-bg-secondary); color: var(--color-text-primary);  border-color: transparent; }
-.f-btn.a-open   { background: var(--color-open-bg);      color: var(--color-open-text);     border-color: transparent; }
-.f-btn.a-closed { background: var(--color-closed-bg);    color: var(--color-closed-text);   border-color: transparent; }
-
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 8px; padding: 1rem 1.25rem;
+function pad(n) { return String(n).padStart(2, '0'); }
+function nowStr() {
+  const d = new Date();
+  return pad(d.getHours()) + ':' + pad(d.getMinutes());
 }
 
-/* CARD */
-.card {
-  background: var(--color-bg);
-  border: 0.5px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 12px; cursor: pointer;
-  display: flex; flex-direction: column; gap: 5px;
-  user-select: none; transition: background 0.12s;
-}
-.card:hover  { background: var(--color-bg-secondary); }
-.card.open   { border-left: 3px solid var(--color-open-border); }
-.card.closed { border-left: 3px solid var(--color-closed-border); }
+/* ----------------------------------------------------------
+   Stats
+   ---------------------------------------------------------- */
 
-.c-num     { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); }
-.c-name    { font-size: 13px; font-weight: 500; line-height: 1.3; }
-.c-adresse { font-size: 11px; color: var(--color-text-secondary); line-height: 1.4; }
+function renderStats() {
+  const open = bureaux.filter(b => b.statut === 'open').length;
+  document.getElementById('s-open').textContent   = open + ' ouverts';
+  document.getElementById('s-closed').textContent = (72 - open) + ' fermés';
+}
 
-.c-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 12px; font-weight: 500;
-  padding: 3px 8px; border-radius: var(--radius-full); width: fit-content;
-  margin-top: 2px;
-}
-.c-badge.open   { background: var(--color-open-bg);   color: var(--color-open-text); }
-.c-badge.closed { background: var(--color-closed-bg); color: var(--color-closed-text); }
-.c-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.c-dot.open   { background: var(--color-open-border); }
-.c-dot.closed { background: var(--color-closed-border); }
-.c-time { font-size: 11px; color: var(--color-text-tertiary); }
-.empty  { padding: 2rem; text-align: center; color: var(--color-text-tertiary); font-size: 14px; grid-column: 1/-1; }
+/* ----------------------------------------------------------
+   Grille — recherche sur numéro, nom ET adresse
+   ---------------------------------------------------------- */
 
-/* OVERLAY */
-.overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.35);
-  align-items: flex-end; justify-content: center;
-  z-index: 100;
-}
-.overlay.visible { display: flex; }
+function render() {
+  const q    = document.getElementById('search').value.toLowerCase();
+  const list = bureaux.filter(b => {
+    const mf = _filter === 'all' || b.statut === _filter;
+    const ms = !q
+      || b.nom.toLowerCase().includes(q)
+      || b.adresse.toLowerCase().includes(q)
+      || pad(b.id).includes(q);
+    return mf && ms;
+  });
 
-/* MODAL */
-.modal {
-  background: var(--color-bg);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  border: 0.5px solid var(--color-border);
-  padding: 1.5rem 1.25rem;
-  width: 100%; max-width: 480px;
-  display: flex; flex-direction: column; gap: 1.25rem;
-}
-.modal-handle {
-  width: 36px; height: 4px;
-  background: var(--color-border-medium);
-  border-radius: var(--radius-full);
-  margin: 0 auto -0.25rem;
-}
-.modal-head {
-  display: flex; align-items: flex-start;
-  justify-content: space-between; gap: 8px;
-}
-#modal-title   { font-size: 16px; font-weight: 500; }
-#modal-sub     { font-size: 13px; color: var(--color-text-secondary); margin-top: 3px; }
-#modal-adresse { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; }
+  const grid = document.getElementById('grid');
 
-#modal-current {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 12px; font-weight: 500;
-  padding: 4px 10px; border-radius: var(--radius-full); white-space: nowrap;
-  flex-shrink: 0;
-}
-#modal-current.open   { background: var(--color-open-bg);   color: var(--color-open-text); }
-#modal-current.closed { background: var(--color-closed-bg); color: var(--color-closed-text); }
-#modal-dot { width: 6px; height: 6px; border-radius: 50%; }
-#modal-dot.open   { background: var(--color-open-border); }
-#modal-dot.closed { background: var(--color-closed-border); }
+  if (!list.length) {
+    grid.innerHTML = '<p class="empty">Aucun bureau trouvé</p>';
+    renderStats();
+    return;
+  }
 
-/* BTN GROUP */
-.btn-group { display: flex; gap: 10px; }
-.btn-status {
-  flex: 1; padding: 16px 12px;
-  border-radius: var(--radius-lg);
-  border: 1.5px solid var(--color-border);
-  background: var(--color-bg-secondary);
-  font-size: 15px; font-weight: 500; cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  color: var(--color-text-secondary); transition: all 0.15s;
-}
-.btn-icon {
-  width: 36px; height: 36px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--color-bg);
-}
-.btn-status.sel-open   { background: var(--color-open-bg);   border-color: var(--color-open-border);   color: var(--color-open-text); }
-.btn-status.sel-closed { background: var(--color-closed-bg); border-color: var(--color-closed-border); color: var(--color-closed-text); }
-.btn-status.sel-open   .btn-icon { background: #eaf3de; }
-.btn-status.sel-closed .btn-icon { background: #fcebeb; }
+  grid.innerHTML = list.map(b => `
+    <div class="card ${b.statut}" onclick="openModal(${b.id})">
+      <span class="c-num">Bureau ${pad(b.id)}</span>
+      <span class="c-name">${b.nom}</span>
+      <span class="c-adresse">${b.adresse}</span>
+      <span class="c-badge ${b.statut}">
+        <span class="c-dot ${b.statut}"></span>
+        ${b.statut === 'open' ? 'Ouvert' : 'Fermé'}
+      </span>
+      ${b.heure ? `<span class="c-time">${b.heure}</span>` : ''}
+    </div>
+  `).join('');
 
-/* ROW ACTIONS */
-.row-actions { display: flex; gap: 8px; }
-.btn-cancel {
-  flex: 1; padding: 13px;
-  border-radius: var(--radius-lg);
-  border: 0.5px solid var(--color-border-medium);
-  background: transparent; font-size: 14px;
-  color: var(--color-text-secondary); cursor: pointer;
-  transition: background 0.12s;
+  renderStats();
 }
-.btn-cancel:hover { background: var(--color-bg-secondary); }
-#btn-confirm {
-  flex: 2; padding: 13px;
-  border-radius: var(--radius-lg);
-  border: none; background: var(--color-accent);
-  color: var(--color-accent-text);
-  font-size: 14px; font-weight: 500; cursor: pointer;
-  transition: opacity 0.15s;
-}
-#btn-confirm:hover:not(:disabled) { opacity: 0.88; }
-#btn-confirm:disabled { opacity: 0.3; cursor: default; }
 
-/* TOAST */
-.toast {
-  position: fixed; bottom: 1.5rem; left: 50%;
-  transform: translateX(-50%) translateY(60px);
-  background: #2c2c2a; color: #f1efe8;
-  padding: 10px 18px; border-radius: var(--radius-full);
-  font-size: 13px; pointer-events: none;
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  z-index: 200; white-space: nowrap;
-}
-.toast.show { transform: translateX(-50%) translateY(0); }
+/* ----------------------------------------------------------
+   Filtres
+   ---------------------------------------------------------- */
 
-/* RESPONSIVE */
-@media (max-width: 640px) {
-  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; padding: 0.75rem 1rem; }
-  .header, .toolbar { padding: 0.75rem 1rem; }
+function setF(f) {
+  _filter = f;
+  document.getElementById('f-all').className    = 'f-btn' + (f === 'all'    ? ' a-all'    : '');
+  document.getElementById('f-open').className   = 'f-btn' + (f === 'open'   ? ' a-open'   : '');
+  document.getElementById('f-closed').className = 'f-btn' + (f === 'closed' ? ' a-closed' : '');
+  render();
 }
-@media (max-width: 400px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-  .btn-group, .row-actions { flex-direction: column; }
+
+/* ----------------------------------------------------------
+   Modale — ouverture
+   ---------------------------------------------------------- */
+
+function openModal(id) {
+  _activeId = id;
+  _chosen   = null;
+  const b   = bureaux[id - 1];
+
+  document.getElementById('modal-title').textContent         = 'Bureau ' + pad(b.id);
+  document.getElementById('modal-sub').textContent           = b.nom;
+  document.getElementById('modal-adresse').textContent       = b.adresse;
+  document.getElementById('modal-current').className         = 'modal-current ' + b.statut;
+  document.getElementById('modal-dot').className             = 'modal-dot ' + b.statut;
+  document.getElementById('modal-current-label').textContent = b.statut === 'open' ? 'Ouvert' : 'Fermé';
+
+  document.getElementById('btn-open').className   = 'btn-status' + (b.statut === 'open'   ? ' sel-open'   : '');
+  document.getElementById('btn-closed').className = 'btn-status' + (b.statut === 'closed' ? ' sel-closed' : '');
+
+  _chosen = b.statut;
+  document.getElementById('btn-confirm').disabled = false;
+  document.getElementById('overlay').classList.add('visible');
 }
+
+/* ----------------------------------------------------------
+   Modale — fermeture
+   ---------------------------------------------------------- */
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('visible');
+  _activeId = null;
+  _chosen   = null;
+}
+
+/* ----------------------------------------------------------
+   Sélection Ouvert / Fermé
+   ---------------------------------------------------------- */
+
+function selectStatus(s) {
+  _chosen = s;
+  document.getElementById('btn-open').className   = 'btn-status' + (s === 'open'   ? ' sel-open'   : '');
+  document.getElementById('btn-closed').className = 'btn-status' + (s === 'closed' ? ' sel-closed' : '');
+  document.getElementById('modal-current').className         = 'modal-current ' + s;
+  document.getElementById('modal-dot').className             = 'modal-dot ' + s;
+  document.getElementById('modal-current-label').textContent = s === 'open' ? 'Ouvert' : 'Fermé';
+  document.getElementById('btn-confirm').disabled = (s === bureaux[_activeId - 1].statut);
+}
+
+/* ----------------------------------------------------------
+   Confirmation
+   ---------------------------------------------------------- */
+
+function confirmStatus() {
+  if (!_activeId || !_chosen) return;
+  const b  = bureaux[_activeId - 1];
+  b.statut = _chosen;
+  b.heure  = nowStr();
+  sauvegarder();
+  closeModal();
+  render();
+  showToast('Bureau ' + pad(b.id) + ' — ' + (_chosen === 'open' ? 'Ouvert' : 'Fermé'));
+}
+
+/* ----------------------------------------------------------
+   Toast
+   ---------------------------------------------------------- */
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ----------------------------------------------------------
+   Init
+   ---------------------------------------------------------- */
+
+document.getElementById('search').addEventListener('input', render);
+
+document.getElementById('overlay').addEventListener('click', function (e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+});
+
+document.getElementById('date-label').textContent =
+  new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+render();

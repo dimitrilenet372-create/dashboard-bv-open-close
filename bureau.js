@@ -1,74 +1,76 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bureau 32 — Église St-Pierre</title>
-  <link rel="stylesheet" href="../bureau.css" />
-</head>
-<body>
-<div class="page">
+/* ============================================================
+   BUREAU INDIVIDUEL — JavaScript
+   ============================================================ */
 
-  <div id="main">
+const bureauNumEl  = document.querySelector('.bureau-num');
+const bureauNumTxt = bureauNumEl ? bureauNumEl.textContent.trim() : 'Bureau';
 
-    <div class="bureau-info">
-      <!-- Numéro du bureau — ne pas modifier -->
-      <span class="bureau-num">Bureau 32</span>
-      <!-- Lieu / nom du bureau — modifier ici -->
-      <span class="bureau-name">Église St-Pierre</span>
-      <!-- Adresse postale — modifier ici -->
-      <span class="bureau-adresse">32 Place Saint-Pierre</span>
-    </div>
+const STORAGE_KEY = 'bureau_statut_' + bureauNumTxt.replace(/\s+/g, '_');
 
-    <div class="status-block">
-      <span class="status-label">État actuel</span>
-      <div id="current-badge" class="closed">
-        <span id="current-dot" class="closed"></span>
-        <span id="current-label">Fermé</span>
-      </div>
-      <span id="current-time"></span>
-    </div>
+let _current = 'closed';
+let _chosen  = null;
 
-    <div class="sep">modifier</div>
+function sauvegarder(statut, heure) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ statut, heure })); } catch (e) {}
+}
 
-    <div class="btn-group">
-      <button class="btn-status sel-closed" id="btn-closed" onclick="pick('closed')">
-        <div class="btn-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="8" stroke="#E24B4A" stroke-width="1.5"/>
-            <path d="M7 7l6 6M13 7l-6 6" stroke="#E24B4A" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        Fermé
-      </button>
-      <button class="btn-status" id="btn-open" onclick="pick('open')">
-        <div class="btn-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="8" stroke="#1D9E75" stroke-width="1.5"/>
-            <path d="M6.5 10l2.5 2.5 5-5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        Ouvert
-      </button>
-    </div>
+function charger() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) return JSON.parse(s); } catch (e) {}
+  return { statut: 'closed', heure: null };
+}
 
-    <button id="btn-confirm" onclick="confirmBureau()" disabled>Confirmer</button>
+function pad(n) { return String(n).padStart(2, '0'); }
+function nowStr() { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
 
-    <a href="../index.html" class="btn-retour">← Retour au dashboard</a>
+function appliquerStatut(s, t) {
+  document.getElementById('current-badge').className   = s;
+  document.getElementById('current-dot').className     = s;
+  document.getElementById('current-label').textContent = s === 'open' ? 'Ouvert' : 'Fermé';
+  const timeEl = document.getElementById('current-time');
+  if (timeEl) timeEl.textContent = t ? 'Mis à jour à ' + t : '';
+}
 
-  </div>
+function pick(s) {
+  _chosen = s;
+  document.getElementById('btn-open').className   = 'btn-status' + (s === 'open'   ? ' sel-open'   : '');
+  document.getElementById('btn-closed').className = 'btn-status' + (s === 'closed' ? ' sel-closed' : '');
+  document.getElementById('btn-confirm').disabled = (s === _current);
+}
 
-  <div id="success">
-    <div id="s-circle">
-      <svg id="s-icon" width="32" height="32" viewBox="0 0 32 32" fill="none"></svg>
-    </div>
-    <p id="s-title"></p>
-    <p id="s-sub"></p>
-    <button class="btn-back" onclick="back()">Modifier à nouveau</button>
-    <a href="../index.html" class="btn-retour">← Retour au dashboard</a>
-  </div>
+function confirmBureau() {
+  if (!_chosen || _chosen === _current) return;
+  _current = _chosen;
+  const t  = nowStr();
+  appliquerStatut(_current, t);
+  sauvegarder(_current, t);
+  document.getElementById('main').classList.add('hidden');
+  const circle = document.getElementById('s-circle');
+  const icon   = document.getElementById('s-icon');
+  circle.className = _current;
+  if (_current === 'open') {
+    icon.innerHTML = '<path d="M10 16l4 4 8-8" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    document.getElementById('s-title').textContent = bureauNumTxt + ' marqué Ouvert';
+  } else {
+    icon.innerHTML = '<path d="M10 10l12 12M22 10l-12 12" stroke="#E24B4A" stroke-width="2" stroke-linecap="round"/>';
+    document.getElementById('s-title').textContent = bureauNumTxt + ' marqué Fermé';
+  }
+  document.getElementById('s-sub').textContent = 'Enregistré à ' + t;
+  document.getElementById('success').classList.add('visible');
+}
 
-</div>
-<script src="../bureau.js"></script>
-</body>
-</html>
+function back() {
+  _chosen = null;
+  document.getElementById('btn-open').className   = 'btn-status' + (_current === 'open'   ? ' sel-open'   : '');
+  document.getElementById('btn-closed').className = 'btn-status' + (_current === 'closed' ? ' sel-closed' : '');
+  document.getElementById('btn-confirm').disabled = true;
+  document.getElementById('success').classList.remove('visible');
+  document.getElementById('main').classList.remove('hidden');
+}
+
+const saved = charger();
+_current    = saved.statut;
+_chosen     = _current;
+appliquerStatut(_current, saved.heure);
+document.getElementById('btn-open').className   = 'btn-status' + (_current === 'open'   ? ' sel-open'   : '');
+document.getElementById('btn-closed').className = 'btn-status' + (_current === 'closed' ? ' sel-closed' : '');
+document.getElementById('btn-confirm').disabled = true;
