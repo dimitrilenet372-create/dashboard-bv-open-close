@@ -15,15 +15,15 @@ const BUREAUX_DATA = [
   { nom: "École Élementaire",      adresse: "13 rue Fagon, 75013 PARIS" }, //3
   { nom: "École Élementaire A",     adresse: "42 rue Jenne, 75013 PARIS" }, //4
   { nom: "École Élementaire A",     adresse: "42 rue Jenner, 75013 PARIS" }, //5
-  { nom: "École Élementaire B",        adresse: "46 rue Jenner, 75013 PARIS" }, //6
+  { nom: "École Élementaire B",    adresse: "46 rue Jenner, 75013 PARIS" }, //6
   { nom: "École Nationale de chimie physique et de biologie",     adresse: "12 rue du Banquier, 75013 PARIS" }, //7
-  { nom: "École maternelle",       adresse: "8 rue Ricaut" }, //8
-  { nom: "Foyer Municipal",       adresse: "9 Avenue Jean Jaurès" }, //9
-  { nom: "Espace Citoyens",       adresse: "10 Rue de la Paix" }, //10
-  { nom: "École V. Hugo",         adresse: "11 Rue Victor Hugo" },
-  { nom: "Salle des Fêtes",       adresse: "12 Place du Marché" },
-  { nom: "École J. Moulin",       adresse: "13 Avenue Jean Moulin" },
-  { nom: "Chapelle St-Gilles",    adresse: "14 Rue Saint-Gilles" },
+  { nom: "École Maternelle",      adresse: "8 rue Ricaut, 75013 PARIS" }, //8
+  { nom: "École Maternelle",      adresse: "8 rue Ricaut, 75013 PARIS" }, //9
+  { nom: "École Élementaire",     adresse: "173 rue du Chateau des Rentiers, 75013 PARIS" }, //10
+  { nom: "École Élementaire",     adresse: "173 rue du Chateau des Rentiers, 75013 PARIS" }, //11
+  { nom: "École Élementaire A",   adresse: "33 Place Jeanne d'Arc, 75013 PARIS" }, //12
+  { nom: "École Élementaire A",   adresse: "33 Place Jeanne d'Arc, 75013 PARIS" }, //13
+  { nom: "École Maternelle",      adresse: "103 rue du Chateau des Rentiers, 7513 PARIS" },
   { nom: "Collège A. France",     adresse: "15 Rue Anatole France" },
   { nom: "MJC Nord",              adresse: "16 Boulevard du Nord" },
   { nom: "Résidence Bellevue",    adresse: "17 Allée Bellevue" },
