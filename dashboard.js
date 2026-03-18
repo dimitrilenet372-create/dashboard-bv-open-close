@@ -10,16 +10,16 @@
    ---------------------------------------------------------- */
 
 const BUREAUX_DATA = [
-  { nom: "Mairie d'arrondisement",       adresse: "1 Place d'Italie" }, //1
-  { nom: "École Élementaire",      adresse: "13 rue Fagon" }, //2
-  { nom: "École Élementaire",      adresse: "13 rue Fagon" }, //3
-  { nom: "École Élementaire A",     adresse: "42 rue Jenner" },
-  { nom: "École Élementaire A",     adresse: "42 rue Jenner" },
-  { nom: "École Maternelle",        adresse: "8 rue Ricaut" },
-  { nom: "École Élementaire",     adresse: "173 rue du Chateau des Rentiers" },
-  { nom: "École Élementaire A",       adresse: "33 Place Jeanne d'Arc" },
-  { nom: "Foyer Municipal",       adresse: "9 Avenue Jean Jaurès" },
-  { nom: "Espace Citoyens",       adresse: "10 Rue de la Paix" },
+  { nom: "Mairie d'arrondisement",       adresse: "1 Place d'Italie, 75013 PARIS" }, //1
+  { nom: "École Élementaire",      adresse: "13 rue Fagon, 75013 PARIS" }, //2
+  { nom: "École Élementaire",      adresse: "13 rue Fagon, 75013 PARIS" }, //3
+  { nom: "École Élementaire A",     adresse: "42 rue Jenne, 75013 PARIS" }, //4
+  { nom: "École Élementaire A",     adresse: "42 rue Jenner, 75013 PARIS" }, //5
+  { nom: "École Élementaire B",        adresse: "46 rue Jenner, 75013 PARIS" }, //6
+  { nom: "École Nationale de chimie physique et de biologie",     adresse: "12 rue du Banquier, 75013 PARIS" }, //7
+  { nom: "École maternelle",       adresse: "8 rue Ricaut" }, //8
+  { nom: "Foyer Municipal",       adresse: "9 Avenue Jean Jaurès" }, //9
+  { nom: "Espace Citoyens",       adresse: "10 Rue de la Paix" }, //10
   { nom: "École V. Hugo",         adresse: "11 Rue Victor Hugo" },
   { nom: "Salle des Fêtes",       adresse: "12 Place du Marché" },
   { nom: "École J. Moulin",       adresse: "13 Avenue Jean Moulin" },
