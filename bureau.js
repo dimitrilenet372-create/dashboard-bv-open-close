@@ -50,9 +50,10 @@ body {
   flex-direction: column;
   gap: 6px;
 }
-.bureau-num  { font-size: 13px; font-weight: 800; color: var(--color-text-tertiary); letter-spacing: 0.08em; text-transform: uppercase; }
+.bureau-num  { font-size: 13px; font-weight: 600; color: black; letter-spacing: 0.08em; text-transform: uppercase; }
 .bureau-name { font-size: 22px; font-weight: 500; line-height: 1.25; }
 .bureau-sub  { font-size: 14px; color: var(--color-text-secondary); }
+.bureau-adresse  { font-size: 11px; color: grey; }
 
 /* STATUT ACTUEL */
 .status-block {
