@@ -285,26 +285,26 @@ document.getElementById('overlay').addEventListener('click', function (e) {
 document.getElementById('date-label').textContent =
   new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
 
- // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+ // // Import the functions you need from the SDKs you need
+ //  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+ //  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
+ //  // TODO: Add SDKs for Firebase products that you want to use
+ //  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDa8YO-DiY0eH7IQanoYi0Vd62t5DE3Kgo",
-    authDomain: "mairie-13-bv.firebaseapp.com",
-    databaseURL: "https://mairie-13-bv-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "mairie-13-bv",
-    storageBucket: "mairie-13-bv.firebasestorage.app",
-    messagingSenderId: "868318584382",
-    appId: "1:868318584382:web:69b37e44e5d249b34efb6f",
-    measurementId: "G-FDFKZMFMJS"
-  };
+ //  // Your web app's Firebase configuration
+ //  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+ //  const firebaseConfig = {
+ //    apiKey: "AIzaSyDa8YO-DiY0eH7IQanoYi0Vd62t5DE3Kgo",
+ //    authDomain: "mairie-13-bv.firebaseapp.com",
+ //    databaseURL: "https://mairie-13-bv-default-rtdb.europe-west1.firebasedatabase.app",
+ //    projectId: "mairie-13-bv",
+ //    storageBucket: "mairie-13-bv.firebasestorage.app",
+ //    messagingSenderId: "868318584382",
+ //    appId: "1:868318584382:web:69b37e44e5d249b34efb6f",
+ //    measurementId: "G-FDFKZMFMJS"
+ //  };
 
-  // Initialize Firebase
+ //  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 
