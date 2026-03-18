@@ -250,16 +250,16 @@ function selectStatus(s) {
    Confirmation
    ---------------------------------------------------------- */
 
-function confirmStatus() {
-  if (!_activeId || !_chosen) return;
-  const b  = bureaux[_activeId - 1];
-  b.statut = _chosen;
-  b.heure  = nowStr();
-  sauvegarder();
-  closeModal();
-  render();
-  showToast('Bureau ' + pad(b.id) + ' — ' + (_chosen === 'open' ? 'Ouvert' : 'Fermé'));
-}
+// function confirmStatus() {
+//   if (!_activeId || !_chosen) return;
+//   const b  = bureaux[_activeId - 1];
+//   b.statut = _chosen;
+//   b.heure  = nowStr();
+//   sauvegarder();
+//   closeModal();
+//   render();
+//   showToast('Bureau ' + pad(b.id) + ' — ' + (_chosen === 'open' ? 'Ouvert' : 'Fermé'));
+// }
 
 /* ----------------------------------------------------------
    Toast
