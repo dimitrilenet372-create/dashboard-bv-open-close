@@ -10,14 +10,14 @@
    ---------------------------------------------------------- */
 
 const BUREAUX_DATA = [
-  { nom: "Mairie Centrale",       adresse: "1 Place de l'Hôtel de Ville" },
-  { nom: "École J. Prévert",      adresse: "2 Rue Jacques Prévert" },
-  { nom: "Gymnase R. Cassin",     adresse: "3 Avenue René Cassin" },
-  { nom: "Salle Polyvalente",     adresse: "4 Rue de la République" },
-  { nom: "Maison de Quartier",    adresse: "5 Boulevard du Général de Gaulle" },
-  { nom: "École P. Curie",        adresse: "6 Rue Pierre et Marie Curie" },
-  { nom: "Bibliothèque Mun.",     adresse: "7 Place de la Liberté" },
-  { nom: "Centre Culturel",       adresse: "8 Rue du Faubourg Saint-Antoine" },
+  { nom: "Mairie d'arrondisement",       adresse: "1 Place d'Italie" }, //1
+  { nom: "École Élementaire",      adresse: "13 rue Fagon" }, //2
+  { nom: "École Élementaire",      adresse: "13 rue Fagon" }, //3
+  { nom: "École Élementaire A",     adresse: "42 rue Jenner" },
+  { nom: "École Élementaire A",     adresse: "42 rue Jenner" },
+  { nom: "École Maternelle",        adresse: "8 rue Ricaut" },
+  { nom: "École Élementaire",     adresse: "173 rue du Chateau des Rentiers" },
+  { nom: "École Élementaire A",       adresse: "33 Place Jeanne d'Arc" },
   { nom: "Foyer Municipal",       adresse: "9 Avenue Jean Jaurès" },
   { nom: "Espace Citoyens",       adresse: "10 Rue de la Paix" },
   { nom: "École V. Hugo",         adresse: "11 Rue Victor Hugo" },
