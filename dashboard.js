@@ -10,20 +10,20 @@
    ---------------------------------------------------------- */
 
 const BUREAUX_DATA = [
-  { nom: "Mairie d'arrondisement",       adresse: "1 Place d'Italie, 75013 PARIS" }, //1
-  { nom: "École Élementaire",      adresse: "13 rue Fagon, 75013 PARIS" }, //2
-  { nom: "École Élementaire",      adresse: "13 rue Fagon, 75013 PARIS" }, //3
-  { nom: "École Élementaire A",     adresse: "42 rue Jenne, 75013 PARIS" }, //4
-  { nom: "École Élementaire A",     adresse: "42 rue Jenner, 75013 PARIS" }, //5
-  { nom: "École Élementaire B",    adresse: "46 rue Jenner, 75013 PARIS" }, //6
-  { nom: "École Nationale de chimie physique et de biologie",     adresse: "12 rue du Banquier, 75013 PARIS" }, //7
-  { nom: "École Maternelle",      adresse: "8 rue Ricaut, 75013 PARIS" }, //8
-  { nom: "École Maternelle",      adresse: "8 rue Ricaut, 75013 PARIS" }, //9
-  { nom: "École Élementaire",     adresse: "173 rue du Chateau des Rentiers, 75013 PARIS" }, //10
-  { nom: "École Élementaire",     adresse: "173 rue du Chateau des Rentiers, 75013 PARIS" }, //11
-  { nom: "École Élementaire A",   adresse: "33 Place Jeanne d'Arc, 75013 PARIS" }, //12
-  { nom: "École Élementaire A",   adresse: "33 Place Jeanne d'Arc, 75013 PARIS" }, //13
-  { nom: "École Maternelle",      adresse: "103 rue du Chateau des Rentiers, 7513 PARIS" },
+  { nom: "Mairie Centrale",       adresse: "1 Place de l'Hôtel de Ville" },
+  { nom: "École J. Prévert",      adresse: "2 Rue Jacques Prévert" },
+  { nom: "Gymnase R. Cassin",     adresse: "3 Avenue René Cassin" },
+  { nom: "Salle Polyvalente",     adresse: "4 Rue de la République" },
+  { nom: "Maison de Quartier",    adresse: "5 Boulevard du Général de Gaulle" },
+  { nom: "École P. Curie",        adresse: "6 Rue Pierre et Marie Curie" },
+  { nom: "Bibliothèque Mun.",     adresse: "7 Place de la Liberté" },
+  { nom: "Centre Culturel",       adresse: "8 Rue du Faubourg Saint-Antoine" },
+  { nom: "Foyer Municipal",       adresse: "9 Avenue Jean Jaurès" },
+  { nom: "Espace Citoyens",       adresse: "10 Rue de la Paix" },
+  { nom: "École V. Hugo",         adresse: "11 Rue Victor Hugo" },
+  { nom: "Salle des Fêtes",       adresse: "12 Place du Marché" },
+  { nom: "École J. Moulin",       adresse: "13 Avenue Jean Moulin" },
+  { nom: "Chapelle St-Gilles",    adresse: "14 Rue Saint-Gilles" },
   { nom: "Collège A. France",     adresse: "15 Rue Anatole France" },
   { nom: "MJC Nord",              adresse: "16 Boulevard du Nord" },
   { nom: "Résidence Bellevue",    adresse: "17 Allée Bellevue" },
@@ -284,28 +284,5 @@ document.getElementById('overlay').addEventListener('click', function (e) {
 
 document.getElementById('date-label').textContent =
   new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-
- // // Import the functions you need from the SDKs you need
- //  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
- //  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
- //  // TODO: Add SDKs for Firebase products that you want to use
- //  // https://firebase.google.com/docs/web/setup#available-libraries
-
- //  // Your web app's Firebase configuration
- //  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
- //  const firebaseConfig = {
- //    apiKey: "AIzaSyDa8YO-DiY0eH7IQanoYi0Vd62t5DE3Kgo",
- //    authDomain: "mairie-13-bv.firebaseapp.com",
- //    databaseURL: "https://mairie-13-bv-default-rtdb.europe-west1.firebasedatabase.app",
- //    projectId: "mairie-13-bv",
- //    storageBucket: "mairie-13-bv.firebasestorage.app",
- //    messagingSenderId: "868318584382",
- //    appId: "1:868318584382:web:69b37e44e5d249b34efb6f",
- //    measurementId: "G-FDFKZMFMJS"
- //  };
-
- //  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
 
 render();
