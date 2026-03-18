@@ -4,8 +4,8 @@
    ============================================================ */
 
 const NOMS = [
-  "Mairie d'arrondissement",      "Ecole élémentaire",    "Gymnase R. Cassin",
-  "Salle Polyvalente",    "Maison de Quartier",  "École P. Curie",
+  "Mairie d'arrondissement",      "Ecole élémentaire",    "Ecole élementaire A",
+  "Ecole élementaire B",    "Maison de Quartier",  "École P. Curie",
   "Bibliothèque Mun.",    "Centre Culturel",     "Foyer Municipal",
   "Espace Citoyens",      "École V. Hugo",       "Salle des Fêtes",
   "École J. Moulin",      "Chapelle St-Gilles",  "Collège A. France",
